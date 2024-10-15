@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 import SidebarMenuItem from "./SidebarMenuItem";
 import Modal from "../Modal";
 import { adminOptions } from "@/app/static/components";
 import { signOut } from "@/app/services/appwrite/users";
-import { useRouter } from "next/navigation";
 
 export default function Sidebar() {
 	const [showModal, setShowModal] = React.useState(false);
