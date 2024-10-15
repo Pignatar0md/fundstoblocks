@@ -1,9 +1,8 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Button from "@/app/components/Buttons/Button";
 import SelectField from "@/app/components/Inputs/SelectField";
-import { useSearchParams } from "next/navigation";
 import { addWallet, updateWallet } from "@/app/services/appwrite/wallets";
 import { getCurrencies, getNetworks } from "@/app/services/appwrite/api";
 // import { getNetworkOptions } from "@/app/helpers/functions";
