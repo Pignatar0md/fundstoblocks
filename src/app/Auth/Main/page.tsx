@@ -1,13 +1,13 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
 import PaginatedList from "@/app/components/PaginatedList";
-// import SearchField from "@/app/components/Inputs/SearchField";
+import SearchField from "@/app/components/Inputs/SearchField";
 import { StoreContext } from "@/state/GlobalProvider";
 import { getTransactionsList } from "@/app/services/appwrite/transactions";
 import { Transaction } from "@/types/Transaction";
 
 export default function MainPage() {
-	// const [searchValue, setSearchValue] = useState("");
+	const [searchValue, setSearchValue] = useState("");
 
 	const { store, setTransactions } = useContext(StoreContext);
 
@@ -19,9 +19,9 @@ export default function MainPage() {
 		getTransactions();
 	}, []);
 
-	// const runSearch = () => {
-	// 	return [];
-	// };
+	const runSearch = () => {
+		return [];
+	};
 
 	return (
 		<div className="flex lg:w-full justify-center items-center space-y-8">
@@ -31,11 +31,11 @@ export default function MainPage() {
 						Lista de Transacciones
 					</h1>
 					<div className="px-4 sm:px-8 max-w-5xl">
-						{/* <SearchField
+						<SearchField
 							runSearch={runSearch}
 							value={searchValue}
 							setValue={(e) => setSearchValue(e.target.value)}
-						/> */}
+						/>
 					</div>
 					<PaginatedList
 						listType="transactions"
