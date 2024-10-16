@@ -165,7 +165,6 @@ export default function WalletDetailsPage() {
 									value: target.value,
 									text: target.options[target.selectedIndex].text,
 								};
-								debugger;
 								return setWallet({
 									...wallet,
 									currencies: selectedOpt,

@@ -15,8 +15,6 @@ export default function SelectField({
 	options: { value: string; text: string }[];
 	defaultSelected: string;
 }) {
-	console.log(defaultSelected);
-
 	const isBordered = bordered
 		? "border border-gray-200 border-2"
 		: "border-hidden";
