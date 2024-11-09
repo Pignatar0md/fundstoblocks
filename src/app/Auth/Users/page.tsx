@@ -6,6 +6,7 @@ import SearchField from "@/app/components/Inputs/SearchField";
 import ImageButton from "@/app/components/Buttons/ImageButton";
 import { StoreContext } from "@/state/GlobalProvider";
 import { getUsers } from "@/app/services/appwrite/users";
+import Add from "@/app/components/Icons/add";
 
 export default function UsersPage() {
 	const [searchValue, setSearchValue] = useState("");
@@ -47,20 +48,7 @@ export default function UsersPage() {
 								type="link"
 								url="/Auth/Users/UserDetails?operationType=add"
 							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									strokeWidth="1.5"
-									stroke="currentColor"
-									className="size-6"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-									/>
-								</svg>
+								<Add />
 							</ImageButton>
 						</div>
 						<div className="w-6/12">
