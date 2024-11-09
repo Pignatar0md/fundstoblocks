@@ -8,6 +8,8 @@ import { getCurrencies, getNetworks } from "@/app/services/appwrite/api";
 // import { getNetworkOptions } from "@/app/helpers/functions";
 import { StoreContext } from "@/state/GlobalProvider";
 import { Wallet } from "@/types/Wallet";
+import Description from "@/app/components/Icons/description";
+import Email from "@/app/components/Icons/email";
 
 export default function WalletDetailsPage() {
 	const router = useRouter();
@@ -98,20 +100,7 @@ export default function WalletDetailsPage() {
 						</label>
 					</div>
 					<div className="flex items-center border-2 mb-5 px-3 rounded-2xl">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							className="h-5 w-5 text-gray-400"
-							fill="none"
-							viewBox="0 0 24 24"
-							strokeWidth="1.5"
-							stroke="currentColor"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
-							/>
-						</svg>
+						<Description />
 						<input
 							id="description"
 							className=" pl-2 w-full outline-none border-none"
@@ -130,20 +119,7 @@ export default function WalletDetailsPage() {
 						</label>
 					</div>
 					<div className="flex items-center border-2 mb-4 px-3 rounded-2xl">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							className="h-5 w-5 text-gray-400"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth="2"
-								d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-							/>
-						</svg>
+						<Email />
 						<input
 							id="address"
 							className=" pl-2 w-full outline-none border-none"
