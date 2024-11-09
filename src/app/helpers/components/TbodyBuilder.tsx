@@ -136,6 +136,7 @@ export const drawTransactionTBody = (rows: Transaction[]): ReactNode => {
 		}
 	);
 };
+
 export const drawUserTBody = (
 	rows: User[],
 	listType: ListType,
@@ -151,7 +152,7 @@ export const drawUserTBody = (
 					<>
 						<ImageButton
 							type={"button"}
-							onPress={() => onDelete(name, accountId)}
+							onPress={() => onDelete(name!, accountId!)}
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -170,7 +171,7 @@ export const drawUserTBody = (
 						</ImageButton>
 						<ImageButton
 							type="link"
-							url={`/Auth/${pageChunk[listType]}?operationType=update&id=${accountId}`}
+							url={`/Auth/${pageChunk[listType]}?id=${accountId}`}
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
