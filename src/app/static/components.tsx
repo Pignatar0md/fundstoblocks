@@ -30,16 +30,16 @@ export const adminOptions = [
 		employeeVisible: false,
 		icon: <Users />,
 	},
-	{
-		name: "Perfil",
-		employeeVisible: true,
-		url: "/Auth/Profile",
-		icon: <Profile />,
-	},
-	{
-		name: "Configuración",
-		employeeVisible: false,
-		url: "/Auth/Settings",
-		icon: <Settings />,
-	},
+	// {
+	// 	name: "Perfil",
+	// 	employeeVisible: true,
+	// 	url: "/Auth/Profile",
+	// 	icon: <Profile />,
+	// },
+	// {
+	// 	name: "Configuración",
+	// 	employeeVisible: false,
+	// 	url: "/Auth/Settings",
+	// 	icon: <Settings />,
+	// },
 ];
