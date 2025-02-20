@@ -5,19 +5,19 @@ import PaginatedList from "@/app/components/PaginatedList";
 import SearchField from "@/app/components/Inputs/SearchField";
 import ImageButton from "@/app/components/Buttons/ImageButton";
 import { StoreContext } from "@/state/GlobalProvider";
-import { getUsers } from "@/app/services/appwrite/users";
 import Add from "@/app/components/Icons/add";
+import { getManagedUsers } from "@/app/services/appwrite/managedUsers";
 
 export default function UsersPage() {
 	const [searchValue, setSearchValue] = useState("");
 	const [showModal, setShowModal] = useState({ showing: false, userName: "" });
 
-	const { store, setUsers } = useContext(StoreContext);
+	const { store, setManagedUsers } = useContext(StoreContext);
 
 	useEffect(() => {
 		const getUsersList = async () => {
-			const response = await getUsers();
-			setUsers(response);
+			const response = await getManagedUsers();
+			setManagedUsers(response);
 		};
 		getUsersList();
 	}, []);

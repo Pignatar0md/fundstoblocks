@@ -2,6 +2,7 @@ export type StoreInitState = {
 	wallets: Wallet[];
 	transactions: Transaction[];
 	users: User[];
+	managedUsers: ManagedUser[];
 };
 
 export type ActionType = {

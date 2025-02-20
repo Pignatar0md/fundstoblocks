@@ -3,11 +3,14 @@ import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 import Button from "@/app/components/Buttons/Button";
-import { addUser, updateUser } from "@/app/services/appwrite/users";
 import PhoneField from "@/app/components/Inputs/PhoneField";
 import Face from "@/app/components/Icons/face";
 import Email from "@/app/components/Icons/email";
 import Password from "@/app/components/Icons/password";
+import {
+	addManagedUser,
+	updateManagedUser,
+} from "@/app/services/appwrite/managedUsers";
 
 export default function UserDetails() {
 	const searchParams = useSearchParams();
@@ -23,9 +26,8 @@ export default function UserDetails() {
 
 	const saveUser = async () => {
 		const response = (await !userId)
-			? addUser(user)
-			: updateUser(user, userId as string);
-		debugger;
+			? addManagedUser(user)
+			: updateManagedUser(user, userId as string);
 		console.log(response);
 	};
 

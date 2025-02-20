@@ -3,7 +3,7 @@
 import { Wallet } from "@/types/Wallet";
 import { Transaction } from "@/types/Transaction";
 import { createContext, FC, ReactNode, useReducer } from "react";
-import { User } from "@/types/User";
+import { ManagedUser, User } from "@/types/User";
 import { ActionType, StoreInitState } from "@/types/State";
 
 const storeInitialState = {
@@ -28,6 +28,18 @@ const storeInitialState = {
 		},
 	],
 	users: [
+		{
+			$id: "",
+			accountId: "",
+			name: "",
+			email: "",
+			avatar: "",
+			phone: "",
+			ethAddr: "",
+			ethPrivateKey: "",
+		},
+	],
+	managedUsers: [
 		{
 			$id: "",
 			accountId: "",
@@ -66,11 +78,13 @@ export const StoreContext = createContext<{
 	setWallets: (wallets: Wallet[]) => void;
 	setTransactions: (transactions: Transaction[]) => void;
 	setUsers: (users: User[]) => void;
+	setManagedUsers: (users: ManagedUser[]) => void;
 }>({
 	store: storeInitialState,
 	setWallets: () => {},
 	setTransactions: () => {},
 	setUsers: () => {},
+	setManagedUsers: () => {},
 });
 
 export const StoreContextProvider: FC<{ children: ReactNode }> = ({
@@ -84,6 +98,8 @@ export const StoreContextProvider: FC<{ children: ReactNode }> = ({
 		dispatch({ type: "SET_TRANSACTIONS", payload: transactions });
 	const setUsers = (users: User[]) =>
 		dispatch({ type: "SET_USERS", payload: users });
+	const setManagedUsers = (managedUsers: ManagedUser[]) =>
+		dispatch({ type: "SET_USERS", payload: managedUsers });
 	// const setWallets = (wallets: Wallet[]) =>
 	// 	dispatch({ type: "SET_WALLETS", payload: wallets });
 
@@ -94,6 +110,7 @@ export const StoreContextProvider: FC<{ children: ReactNode }> = ({
 				setWallets,
 				setTransactions,
 				setUsers,
+				setManagedUsers,
 			}}
 		>
 			{children}

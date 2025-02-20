@@ -1,5 +1,9 @@
 import { Avatars, Client, Databases, Account, Storage, Teams } from "appwrite";
 
+export const WEB3_CONFIG = {
+	INFURA_API_KEY: "",
+};
+
 const BACKEND_CONFIG = {
 	APPWRITE_ENDPOINT: "https://cloud.appwrite.io/v1",
 
@@ -10,6 +14,7 @@ const BACKEND_CONFIG = {
 	TRANSACTIONS_COLLECTION_ID: "",
 	NETWORKS_COLLECTION_ID: "",
 	USERS_COLLECTION_ID: "",
+	MANAGED_USERS_COLLECTION_ID: "",
 };
 const client = new Client();
 
