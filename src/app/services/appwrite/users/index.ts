@@ -7,18 +7,28 @@ export const createAdminUser = async ({
 	password,
 	email,
 	phone,
+	ethAddr,
+	ethPrivateKey,
 }: User) => {
 	try {
 		const newAccount = await account.create(ID.unique(), email, password, name);
 		const avatarUrl = avatars.getInitials(name);
 
 		await createUserSession({ email, password });
-
+		const infoUser = {
+			accountId: newAccount.$id,
+			email,
+			name,
+			avatar: avatarUrl,
+			phone,
+			ethAddr,
+			ethPrivateKey,
+		};
 		const newUser = await databases.createDocument(
 			BACKEND_CONFIG.DATABASE_ID,
 			BACKEND_CONFIG.USERS_COLLECTION_ID,
 			ID.unique(),
-			{ accountId: newAccount.$id, email, name, avatar: avatarUrl, phone }
+			infoUser
 		);
 		return newUser;
 	} catch (error: unknown) {
@@ -99,7 +109,7 @@ export const addUser = async ({ name, email, password, phone }: User) => {
 	try {
 		const newAccount = await account.create(ID.unique(), email, password, name);
 		const avatarUrl = avatars.getInitials(name);
-		const response = await databases.createDocument(
+		await databases.createDocument(
 			BACKEND_CONFIG.DATABASE_ID,
 			BACKEND_CONFIG.USERS_COLLECTION_ID,
 			ID.unique(),
