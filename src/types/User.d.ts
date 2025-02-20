@@ -5,6 +5,17 @@ export type User = {
 	avatar?: string;
 	phone?: string;
 	password: string;
+	ethAddr: string;
+	ethPrivateKey: string;
 };
 
 export type UserLogin = { password: string; email: string };
+
+export type ManagedUser = {
+	accountId?: string;
+	name?: string;
+	email: string;
+	avatar?: string;
+	phone?: string;
+	password: string;
+};
