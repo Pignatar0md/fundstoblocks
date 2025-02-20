@@ -103,7 +103,9 @@ export const drawTransactionTBody = (rows: Transaction[]): ReactNode => {
 					<td className={"text-center py-2"}>
 						{formatDate(validatingAt, "time")}
 					</td>
-					<td className={"text-center py-2"}>{wallets.description}</td>
+					<td className={"text-center py-2"}>
+						{wallets ? wallets.description : "(Eliminada)"}
+					</td>
 					<td className={"text-center py-2"}>
 						{formatDate(confirmationAt, "time")}
 					</td>
