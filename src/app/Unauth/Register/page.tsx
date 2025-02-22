@@ -12,7 +12,7 @@ import { createAdminUser } from "@/app/services/appwrite/users";
 import Face from "@/app/components/Icons/face";
 import Email from "@/app/components/Icons/email";
 import Password from "@/app/components/Icons/password";
-import { WEB3_CONFIG } from "@/app/services/appwrite/init";
+import { WEB3_CONFIG } from "../../services/appwrite/init";
 // import Store from "@/app/components/Icons/store";
 
 export default function RegisterPage() {

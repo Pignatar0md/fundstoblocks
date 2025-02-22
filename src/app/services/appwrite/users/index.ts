@@ -55,8 +55,8 @@ export const getCurrentUser = async () => {
 			[Query.equal("accountId", currentAccount.$id)]
 		);
 		return currentUser.documents[0];
-	} catch (error: any) {
-		return error;
+	} catch (error) {
+		throw error;
 	}
 };
 
@@ -64,8 +64,8 @@ export const signOut = async () => {
 	try {
 		const response = await account.deleteSession("current");
 		return response;
-	} catch (error: any) {
-		throw new Error(error);
+	} catch (error) {
+		throw error;
 	}
 };
 
@@ -73,8 +73,8 @@ export const signIn = async ({ password, email }: UserLogin) => {
 	try {
 		const session = await createUserSession({ email, password });
 		return session;
-	} catch (error: any) {
-		throw Error(error);
+	} catch (error) {
+		throw error;
 	}
 };
 
@@ -86,13 +86,13 @@ export const getUsers = async () => {
 			[Query.orderDesc("$createdAt")]
 		);
 		return response.documents as unknown as User[];
-	} catch (error: any) {
-		throw new Error(error);
+	} catch (error) {
+		throw error;
 	}
 };
 // export const getUser = async () => {};
 
-export const quitUser = async () => {
+export const quitUser = async (id: string) => {
 	try {
 		const response = await databases.deleteDocument(
 			BACKEND_CONFIG.DATABASE_ID,
@@ -100,8 +100,8 @@ export const quitUser = async () => {
 			id
 		);
 		return response;
-	} catch (error: any) {
-		throw new Error(error);
+	} catch (error) {
+		throw error;
 	}
 };
 
@@ -125,8 +125,8 @@ export const addUser = async ({ name, email, password, phone }: User) => {
 			{ accountId: newAccount.$id, email, name, avatar: avatarUrl, phone }
 		);
 		return newUser;
-	} catch (error: any) {
-		throw new Error(error);
+	} catch (error) {
+		throw error;
 	}
 };
 
@@ -135,14 +135,11 @@ export const updateUser = async (user: User, userId: string) => {
 		const response = await databases.updateDocument(
 			BACKEND_CONFIG.DATABASE_ID,
 			BACKEND_CONFIG.TRANSACTIONS_COLLECTION_ID,
-			$id,
-			{
-				status,
-				confirmationAt,
-			}
+			userId,
+			user
 		);
 		return response;
-	} catch (error: any) {
-		throw new Error(error);
+	} catch (error) {
+		throw error;
 	}
 };

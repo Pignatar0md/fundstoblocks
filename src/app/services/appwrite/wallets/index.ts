@@ -10,8 +10,8 @@ export const getWallets = async () => {
 			[Query.orderDesc("$createdAt")]
 		);
 		return response;
-	} catch (error: any) {
-		throw new Error(error);
+	} catch (error) {
+		throw error;
 	}
 };
 // export const getWallet = async (id: string) => {
@@ -25,8 +25,8 @@ export const quitWallet = async (id: string) => {
 			id
 		);
 		return response;
-	} catch (error: any) {
-		return error.message;
+	} catch (error) {
+		throw error;
 	}
 };
 
@@ -49,8 +49,8 @@ export const addWallet = async ({
 			}
 		);
 		return response;
-	} catch (error: any) {
-		throw new Error(error);
+	} catch (error) {
+		throw error;
 	}
 };
 
@@ -75,7 +75,7 @@ export const updateWallet = async ({
 			}
 		);
 		return response;
-	} catch (error: any) {
-		throw new Error(error);
+	} catch (error) {
+		throw error;
 	}
 };

@@ -28,4 +28,20 @@ const databases = new Databases(client);
 const storage = new Storage(client);
 const avatars = new Avatars(client);
 
-export { teams, account, databases, storage, avatars, BACKEND_CONFIG };
+const cryptoNetworks = {
+	Polygon: "",
+	Ethereum: "",
+	Avalanche: "",
+	BSC: "",
+	Arbitrum: "",
+};
+
+export {
+	teams,
+	account,
+	databases,
+	storage,
+	avatars,
+	BACKEND_CONFIG,
+	cryptoNetworks,
+};

@@ -11,8 +11,8 @@ export const getManagedUsers = async () => {
 			[Query.orderDesc("$createdAt")]
 		);
 		return response.documents as unknown as ManagedUser[];
-	} catch (error: any) {
-		throw new Error(error);
+	} catch (error) {
+		throw error;
 	}
 };
 
@@ -39,8 +39,8 @@ export const quitManagedUser = async (id: string) => {
 			id
 		);
 		return response;
-	} catch (error: any) {
-		throw new Error(error);
+	} catch (error) {
+		throw error;
 	}
 };
 
@@ -70,8 +70,8 @@ export const addManagedUser = async ({
 			{ accountId: newAccount.$id, email, name, avatar: avatarUrl, phone }
 		);
 		return newManagedUser;
-	} catch (error: any) {
-		throw new Error(error);
+	} catch (error) {
+		throw error;
 	}
 };
 
@@ -85,7 +85,7 @@ export const updateManagedUser = async (user: ManagedUser, userId: string) => {
 			user
 		);
 		return response;
-	} catch (error: any) {
-		throw new Error(error);
+	} catch (error) {
+		throw error;
 	}
 };

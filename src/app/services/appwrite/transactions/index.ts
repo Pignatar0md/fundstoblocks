@@ -10,8 +10,8 @@ export const getTransactionsList = async (): Promise<Transaction[]> => {
 			[Query.orderDesc("$createdAt")]
 		);
 		return response.documents as unknown as Transaction[];
-	} catch (error: any) {
-		throw new Error(error);
+	} catch (error) {
+		throw error;
 	}
 };
 // export const getTransaction = async () => {}
@@ -32,8 +32,8 @@ export const updateTransaction = async ({
 			}
 		);
 		return response;
-	} catch (error: any) {
-		throw new Error(error);
+	} catch (error) {
+		throw error;
 	}
 };
 
@@ -62,7 +62,7 @@ export const addTransaction = async ({
 		);
 		debugger;
 		return response;
-	} catch (error: any) {
-		throw new Error(error);
+	} catch (error) {
+		throw error;
 	}
 };
