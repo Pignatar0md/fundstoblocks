@@ -7,6 +7,7 @@ import Modal from "./components/Modal";
 import { getCurrentUser, signIn } from "./services/appwrite/users";
 import Email from "./components/Icons/email";
 import Password from "./components/Icons/password";
+import { LOGGEDIN_USER_STORAGE_KEYS } from "./services/appwrite/init";
 
 export default function Home() {
 	const modalInitState = { show: false, title: "", message: "" };
@@ -15,10 +16,13 @@ export default function Home() {
 	const router = useRouter();
 
 	const checkIsSession = async () => {
-		const openedSession = await getCurrentUser();
-		if (openedSession.code === 401) return;
-		if (!!openedSession.name) {
-			router.push("/Auth/Main/");
+		try {
+			const openedSession = await getCurrentUser();
+			if (!!openedSession.name) {
+				router.push("/Auth/Main/");
+			}
+		} catch (error) {
+			console.info(error);
 		}
 	};
 
@@ -28,7 +32,43 @@ export default function Home() {
 
 	const handleSubmit = async () => {
 		try {
-			await signIn(user);
+			const signInResult = await signIn(user);
+			const currentUserResult = await getCurrentUser();
+			//providerUid = email
+			//userId = accountId
+			await sessionStorage.setItem(
+				LOGGEDIN_USER_STORAGE_KEYS.providerUid,
+				signInResult.providerUid
+			);
+			await sessionStorage.setItem(
+				LOGGEDIN_USER_STORAGE_KEYS.userId,
+				signInResult.userId
+			);
+
+			await sessionStorage.setItem(
+				LOGGEDIN_USER_STORAGE_KEYS.id,
+				currentUserResult.$id
+			);
+			await sessionStorage.setItem(
+				LOGGEDIN_USER_STORAGE_KEYS.accountId,
+				currentUserResult.accountId
+			);
+			await sessionStorage.setItem(
+				LOGGEDIN_USER_STORAGE_KEYS.avatar,
+				currentUserResult.avatar
+			);
+			await sessionStorage.setItem(
+				LOGGEDIN_USER_STORAGE_KEYS.email,
+				currentUserResult.email
+			);
+			await sessionStorage.setItem(
+				LOGGEDIN_USER_STORAGE_KEYS.name,
+				currentUserResult.name
+			);
+			await sessionStorage.setItem(
+				LOGGEDIN_USER_STORAGE_KEYS.phone,
+				currentUserResult.phone
+			);
 			router.push("/Auth/Main/");
 		} catch (error: unknown) {
 			if (error instanceof Error) {
