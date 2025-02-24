@@ -33,45 +33,49 @@ export default function ReceivePage() {
 	return (
 		<div className="flex lg:w-1/2 justify-center items-center space-y-8">
 			<div className="w-full px-8 md:px-32 lg:px-24">
-				<form
-					action={createQRCode}
-					className="bg-white rounded-md shadow-2xl p-5"
-				>
-					<h1 className="text-gray-800 text-center font-bold text-2xl mb-5">
-						Crea un Cobro
-					</h1>
-					<div>
-						<label>Importe a recibir</label>
-					</div>
-					<div className="flex items-center border-2 mb-3 px-3 rounded-2xl ">
-						<Money />
-						<input
-							className="pl-2 w-full outline-none border-none"
-							type="text"
-							value={amount}
-							onChange={({ target }) => setAmount(target.value)}
-							name="amount"
-							id="amount"
-							placeholder="Ej: 3.25"
-						/>
-					</div>
-					<div className="items-center mb-8 py-2 rounded-2xl ">
-						<SelectField
-							handleChange={({ target }) =>
-								setWallet({
-									value: target.value,
-									text: target.options[target.selectedIndex].text,
-								})
-							}
-							bordered
-							defaultSelected={wallet.value}
-							options={walletOptions}
-							selectName="wallet"
-							label="Seleccionar billetera"
-						/>
-					</div>
-					<Button text={"Crear QR de Pago"} type="submit" />
-				</form>
+				{wallet && wallet.value ? (
+					<form
+						action={createQRCode}
+						className="bg-white rounded-md shadow-2xl p-5"
+					>
+						<h1 className="text-gray-800 text-center font-bold text-2xl mb-5">
+							Crea un Cobro
+						</h1>
+						<div>
+							<label>Importe a recibir</label>
+						</div>
+						<div className="flex items-center border-2 mb-3 px-3 rounded-2xl ">
+							<Money />
+							<input
+								className="pl-2 w-full outline-none border-none"
+								type="text"
+								value={amount}
+								onChange={({ target }) => setAmount(target.value)}
+								name="amount"
+								id="amount"
+								placeholder="Ej: 3.25"
+							/>
+						</div>
+						<div className="items-center mb-8 py-2 rounded-2xl ">
+							<SelectField
+								handleChange={({ target }) =>
+									setWallet({
+										value: target.value,
+										text: target.options[target.selectedIndex].text,
+									})
+								}
+								bordered
+								defaultSelected={wallet.value}
+								options={walletOptions}
+								selectName="wallet"
+								label="Seleccionar billetera"
+							/>
+						</div>
+						<Button text={"Crear QR de Pago"} type="submit" />
+					</form>
+				) : (
+					<span>Sin wallets, por favor cree algunas wallets.</span>
+				)}
 			</div>
 		</div>
 	);

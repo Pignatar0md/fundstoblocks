@@ -18,4 +18,5 @@ export type ManagedUser = {
 	avatar?: string;
 	phone?: string;
 	password: string;
+	users: string;
 };
