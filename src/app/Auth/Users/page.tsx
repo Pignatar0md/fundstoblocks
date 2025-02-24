@@ -6,24 +6,42 @@ import SearchField from "@/app/components/Inputs/SearchField";
 import ImageButton from "@/app/components/Buttons/ImageButton";
 import { StoreContext } from "@/state/GlobalProvider";
 import Add from "@/app/components/Icons/add";
-import { getManagedUsers } from "@/app/services/appwrite/managedUsers";
+import {
+	getManagedUsers,
+	quitManagedUser,
+} from "@/app/services/appwrite/managedUsers";
 
 export default function UsersPage() {
-	const [searchValue, setSearchValue] = useState("");
-	const [showModal, setShowModal] = useState({ showing: false, userName: "" });
-
 	const { store, setManagedUsers } = useContext(StoreContext);
+	const modalUsersInitState = {
+		showing: false,
+		userName: "",
+		userId: "",
+	};
+	const [searchValue, setSearchValue] = useState("");
+	const [showModal, setShowModal] = useState(modalUsersInitState);
+
+	const getUsersList = async () => {
+		const response = await getManagedUsers();
+		setManagedUsers(response);
+	};
 
 	useEffect(() => {
-		const getUsersList = async () => {
-			const response = await getManagedUsers();
-			setManagedUsers(response);
-		};
 		getUsersList();
 	}, []);
 
 	const runSearch = () => {
 		return [];
+	};
+
+	const deleteUser = async () => {
+		const response: { message?: string } = await quitManagedUser(
+			showModal.userId
+		);
+		if (response?.message === "") {
+			setShowModal(modalUsersInitState);
+		}
+		getUsersList();
 	};
 
 	return (
@@ -35,7 +53,7 @@ export default function UsersPage() {
 				body={`Estás a punto de eliminar el usuario ${showModal.userName}. Seguro que quieres hacer esto?`}
 				acceptButtonText={"Si"}
 				cancelButtonText={"No"}
-				onAccept={() => ({})}
+				onAccept={deleteUser}
 			/>
 			<div className="w-full px-8 md:px-32 lg:px-24">
 				<div className="bg-white rounded-md shadow-2xl p-5">
@@ -62,8 +80,15 @@ export default function UsersPage() {
 						</div>
 					</div>
 					<PaginatedList
-						listType="users"
-						rows={store.users}
+						listType="managedUsers"
+						rows={store.managedUsers}
+						onDelete={(description: string, accountId: string) =>
+							setShowModal({
+								showing: true,
+								userName: description,
+								userId: accountId,
+							})
+						}
 						heads={["#", "Nombre", "e-mail", "Acciones"]}
 					/>
 				</div>

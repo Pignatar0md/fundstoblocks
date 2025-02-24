@@ -46,6 +46,7 @@ export default function WalletDetailsPage() {
 		description: "",
 		currencies: { value: "", text: "" },
 		networks: { value: "", text: "" },
+		users: "",
 	});
 	// const [network, setNetwork] = useState(getNetworkOptions(token.value));
 	const { store } = useContext(StoreContext);
@@ -55,6 +56,7 @@ export default function WalletDetailsPage() {
 			(wallet: Wallet) => wallet.$id === walletId
 		);
 		setWallet({
+			...wallet,
 			address: walletToUpdate[0].address,
 			description: walletToUpdate[0].description,
 			currencies: {
@@ -81,9 +83,9 @@ export default function WalletDetailsPage() {
 			? updateWallet(wallet)
 			: addWallet(wallet);
 
-		// if (response.$id) {
-		router.push("/Auth/Wallets");
-		// }
+		if (response.$id) {
+			router.push("/Auth/Wallets");
+		}
 	};
 
 	return (

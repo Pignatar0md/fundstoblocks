@@ -34,7 +34,7 @@ export default function WalletsPage() {
 	};
 
 	const deleteWallet = async () => {
-		const response = await quitWallet(showModal.walletId);
+		const response: { message?: string } = await quitWallet(showModal.walletId);
 		if (response?.message === "") {
 			setShowModal(modalWalletsInitState);
 		}

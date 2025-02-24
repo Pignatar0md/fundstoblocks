@@ -16,6 +16,68 @@ export const getManagedUsers = async () => {
 	}
 };
 
+export const addManagedUser = async ({
+	name,
+	email,
+	password,
+	phone,
+	users,
+}: ManagedUser) => {
+	// CREATE
+	try {
+		const newAccount = await account.create(ID.unique(), email, password, name);
+		const avatarUrl = avatars.getInitials(name);
+
+		const newManagedUser = await databases.createDocument(
+			BACKEND_CONFIG.DATABASE_ID,
+			BACKEND_CONFIG.MANAGED_USERS_COLLECTION_ID,
+			ID.unique(),
+			{
+				accountId: newAccount.$id,
+				email,
+				name,
+				avatar: avatarUrl,
+				phone,
+				users,
+			}
+		);
+		return newManagedUser;
+	} catch (error) {
+		throw error;
+	}
+};
+
+export const quitManagedUser = async (id: string) => {
+	// DELETE
+	try {
+		await account.updatePassword("z0b8v6x74j", "111111111");
+		debugger;
+		const response = await databases.deleteDocument(
+			BACKEND_CONFIG.DATABASE_ID,
+			BACKEND_CONFIG.MANAGED_USERS_COLLECTION_ID,
+			id
+		);
+		return response;
+	} catch (error) {
+		throw error;
+	}
+};
+
+// export const updateManagedUser = async (user: ManagedUser, userId: string) => {
+// 	// UPDATE
+// 	try {
+// 		const response = await databases.updateDocument(
+// 			BACKEND_CONFIG.DATABASE_ID,
+// 			BACKEND_CONFIG.MANAGED_USERS_COLLECTION_ID,
+// 			userId,
+// 			user
+// 		);
+// 		return response;
+// 	} catch (error) {
+// 		throw error;
+// 	}
+// };
+
 // export const getManagedUser = async (id: string) => {
 // 	// READ
 // 	try {
@@ -29,63 +91,3 @@ export const getManagedUsers = async () => {
 // 		throw new Error(error);
 // 	}
 // };
-
-export const quitManagedUser = async (id: string) => {
-	// DELETE
-	try {
-		const response = await databases.deleteDocument(
-			BACKEND_CONFIG.DATABASE_ID,
-			BACKEND_CONFIG.MANAGED_USERS_COLLECTION_ID,
-			id
-		);
-		return response;
-	} catch (error) {
-		throw error;
-	}
-};
-
-export const addManagedUser = async ({
-	name,
-	email,
-	password,
-	phone,
-}: ManagedUser) => {
-	// CREATE
-	try {
-		const newAccount = await account.create(ID.unique(), email, password, name);
-		const avatarUrl = avatars.getInitials(name);
-		await databases.createDocument(
-			BACKEND_CONFIG.DATABASE_ID,
-			BACKEND_CONFIG.MANAGED_USERS_COLLECTION_ID,
-			ID.unique(),
-			{
-				name,
-				email,
-			}
-		);
-		const newManagedUser = await databases.createDocument(
-			BACKEND_CONFIG.DATABASE_ID,
-			BACKEND_CONFIG.MANAGED_USERS_COLLECTION_ID,
-			ID.unique(),
-			{ accountId: newAccount.$id, email, name, avatar: avatarUrl, phone }
-		);
-		return newManagedUser;
-	} catch (error) {
-		throw error;
-	}
-};
-
-export const updateManagedUser = async (user: ManagedUser, userId: string) => {
-	// UPDATE
-	try {
-		const response = await databases.updateDocument(
-			BACKEND_CONFIG.DATABASE_ID,
-			BACKEND_CONFIG.MANAGED_USERS_COLLECTION_ID,
-			userId,
-			user
-		);
-		return response;
-	} catch (error) {
-		throw error;
-	}
-};

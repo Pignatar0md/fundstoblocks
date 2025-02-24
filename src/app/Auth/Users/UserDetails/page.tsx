@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 import Button from "@/app/components/Buttons/Button";
@@ -11,6 +11,7 @@ import {
 	addManagedUser,
 	updateManagedUser,
 } from "@/app/services/appwrite/managedUsers";
+import { LOGGEDIN_USER_STORAGE_KEYS } from "@/app/services/appwrite/init";
 
 export default function UserDetails() {
 	const searchParams = useSearchParams();
@@ -22,7 +23,17 @@ export default function UserDetails() {
 		password: "",
 		email: "",
 		phone: "",
+		users: "",
 	});
+
+	useEffect(() => {
+		const getAdminUserId = async () => {
+			const adminUserId =
+				(await sessionStorage.getItem(LOGGEDIN_USER_STORAGE_KEYS.id)) || "";
+			setUser({ ...user, users: adminUserId });
+		};
+		getAdminUserId();
+	}, []);
 
 	const saveUser = async () => {
 		const response = (await !userId)
@@ -32,7 +43,7 @@ export default function UserDetails() {
 	};
 
 	const handleChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-		setUser({ ...user, [target.name]: [target.value] });
+		setUser({ ...user, [target.name]: target.value });
 	};
 
 	return (
