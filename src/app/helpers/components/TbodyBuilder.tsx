@@ -11,7 +11,7 @@ import { ReactNode } from "react";
 const pageChunk = {
 	transactions: "",
 	wallets: "Wallets/WalletDetails",
-	users: "/Users/UserDetails",
+	managedUsers: "/Users/UserDetails",
 };
 
 export const drawWalletTBody = (
@@ -106,27 +106,24 @@ export const drawTransactionTBody = (rows: Transaction[]): ReactNode => {
 };
 
 export const drawUserTBody = (
-	rows: User[],
+	rows: ManagedUser[],
 	listType: ListType,
 	onDelete: (description: string, id: string) => void
 ): ReactNode => {
-	return rows.map(({ name, email, accountId }: User, index: number) => {
+	return rows.map(({ name, email, $id }: ManagedUser, index: number) => {
 		return (
 			<tr key={index}>
-				<td className={"text-center py-2"}>{accountId}</td>
+				<td className={"text-center py-2"}>{$id}</td>
 				<td className={"text-center py-2"}>{name}</td>
 				<td className={"text-center py-2"}>{email}</td>
 				<td className={"flex flex-row py-2 justify-evenly items-end"}>
 					<>
-						<ImageButton
-							type={"button"}
-							onPress={() => onDelete(name!, accountId!)}
-						>
+						<ImageButton type={"button"} onPress={() => onDelete(name!, $id!)}>
 							<Delete />
 						</ImageButton>
 						<ImageButton
 							type="link"
-							url={`/Auth/${pageChunk[listType]}?id=${accountId}`}
+							url={`/Auth/${pageChunk[listType]}?id=${$id}`}
 						>
 							<Edit />
 						</ImageButton>

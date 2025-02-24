@@ -12,7 +12,7 @@ export type User = {
 export type UserLogin = { password: string; email: string };
 
 export type ManagedUser = {
-	accountId?: string;
+	$id: string;
 	name?: string;
 	email: string;
 	avatar?: string;

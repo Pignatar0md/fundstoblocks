@@ -9,8 +9,8 @@ export const getCurrencies = async () => {
 			[Query.orderDesc("$createdAt")]
 		);
 		return response.documents;
-	} catch (error: any) {
-		throw new Error(error);
+	} catch (error) {
+		throw error;
 	}
 };
 
@@ -22,7 +22,7 @@ export const getNetworks = async () => {
 			[Query.orderDesc("$createdAt")]
 		);
 		return response.documents;
-	} catch (error: any) {
-		throw new Error(error);
+	} catch (error) {
+		throw error;
 	}
 };

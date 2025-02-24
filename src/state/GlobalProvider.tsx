@@ -63,6 +63,11 @@ const storeReducer = (state: StoreInitState, action: ActionType) => {
 				...state,
 				transactions: action.payload as Transaction[],
 			};
+		case "SET_MANAGED_USERS":
+			return {
+				...state,
+				managedUsers: action.payload as ManagedUser[],
+			};
 		case "SET_USERS":
 			return {
 				...state,
@@ -78,7 +83,7 @@ export const StoreContext = createContext<{
 	setWallets: (wallets: Wallet[]) => void;
 	setTransactions: (transactions: Transaction[]) => void;
 	setUsers: (users: User[]) => void;
-	setManagedUsers: (users: ManagedUser[]) => void;
+	setManagedUsers: (managedUsers: ManagedUser[]) => void;
 }>({
 	store: storeInitialState,
 	setWallets: () => {},
@@ -99,7 +104,7 @@ export const StoreContextProvider: FC<{ children: ReactNode }> = ({
 	const setUsers = (users: User[]) =>
 		dispatch({ type: "SET_USERS", payload: users });
 	const setManagedUsers = (managedUsers: ManagedUser[]) =>
-		dispatch({ type: "SET_USERS", payload: managedUsers });
+		dispatch({ type: "SET_MANAGED_USERS", payload: managedUsers });
 	// const setWallets = (wallets: Wallet[]) =>
 	// 	dispatch({ type: "SET_WALLETS", payload: wallets });
 
