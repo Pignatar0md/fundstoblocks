@@ -1,22 +1,12 @@
+import { dayMonthFormat, hoursMinutesFormat } from "@/app/static/helpers";
 import ImageButton from "@/app/components/Buttons/ImageButton";
 import Delete from "@/app/components/Icons/delete";
 import Edit from "@/app/components/Icons/edit";
 import { ListType } from "@/types/Components";
 import { Transaction } from "@/types/Transaction";
-import { User } from "@/types/User";
+import { ManagedUser } from "@/types/User";
 import { Wallet } from "@/types/Wallet";
 import { ReactNode } from "react";
-
-export const hoursMinutesFormat = {
-	hour: "numeric",
-	minute: "numeric",
-};
-
-export const dayMonthFormat = {
-	month: "numeric",
-	day: "numeric",
-	year: "numeric",
-};
 
 const pageChunk = {
 	transactions: "",

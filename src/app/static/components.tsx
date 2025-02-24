@@ -1,7 +1,7 @@
 import Home from "../components/Icons/home";
-import Profile from "../components/Icons/profile";
+// import Profile from "../components/Icons/profile";
 import QrCode from "../components/Icons/qrCode";
-import Settings from "../components/Icons/settings";
+// import Settings from "../components/Icons/settings";
 import Users from "../components/Icons/users";
 import Wallet from "../components/Icons/wallet";
 

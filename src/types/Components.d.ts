@@ -1,1 +1,1 @@
-export type ListType = "transactions" | "wallets" | "users";
+export type ListType = "transactions" | "wallets" | "managedUsers";
