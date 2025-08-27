@@ -4,7 +4,6 @@ export type User = {
 	email: string;
 	avatar?: string;
 	phone?: string;
-	password: string;
 	ethAddr: string;
 	ethPrivateKey: string;
 };
@@ -17,6 +16,5 @@ export type ManagedUser = {
 	email: string;
 	avatar?: string;
 	phone?: string;
-	password: string;
 	users: string;
 };

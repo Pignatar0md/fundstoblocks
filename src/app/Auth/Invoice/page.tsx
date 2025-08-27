@@ -1,78 +1,96 @@
 "use client";
-// import Button from "@/app/components/Buttons/Button";
-// import { addTransaction, updateTransaction } from "@/app/services/appwrite/transactions";
-// import { useRouter } from "next/navigation";
+import { updateTransactionStatus } from "@/app/services/supabase/transactions";
+import { addTransaction } from "@/app/services/supabase/transactions";
+import { useRouter } from "next/navigation";
 import QrGenerator from "@/app/components/QrGenerator";
 import { StoreContext } from "@/state/GlobalProvider";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
+import { loggedInUserStorageKeys } from "@/app/services/supabase/init";
 
 const CHARGE_COIN = "$";
 
 export default function InvoicePage() {
 	const { store } = useContext(StoreContext);
 	const searchParams = useSearchParams();
+	const router = useRouter();
 	const amount = searchParams.get("amount");
 	const walletId = searchParams.get("walletId");
+	const [transactionId, setTransactionId] = useState("");
+	const [adminUserId, setAdminUserId] = useState("");
+	const [internalWalletAddr, setInternalWalletAddr] = useState("");
 	const [walletInfo, setWalletInfo] = useState({
 		description: "",
-		networks: { name: "", description: "" },
+		networks: { name: "", descriptions: "" },
 	});
 
-	useEffect(() => {
-		const receivingWallet = store.wallets.filter(
-			(wallet) => wallet.$id === walletId
+	const getInitialParams = async () => {
+		const userId = await sessionStorage.getItem(loggedInUserStorageKeys.userId);
+		const internalEthAddr = await sessionStorage.getItem(
+			loggedInUserStorageKeys.walletAddress
 		);
-		setWalletInfo(receivingWallet[0]);
-	}, []);
-	// const updatePayment = async () => {
-	// 	const response = await updateTransaction({
-	// 		$id: "670ce96f00115c4da6b6",
-	// 		status: "confirmed",
-	// 		confirmationAt: "2024-10-14T11:34:21.231+00:00",
-	// 	});
-	// 	debugger;
-	// };
-	// const addPayment = async () => {
-	// 	const transaction = {
-	// 		amount: "3.45",
-	// 		wallets: { $id: "67080dda00107bbdf693" },
-	// 		from: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-	// 		status: "validating",
-	// 		confirmationAt: "",
-	// 		validatingAt: "2024-10-12T20:57:32.101+00:00",
-	// 	};
-	// 	debugger;
-	// 	const response = await addTransaction(transaction);
-	// 	if (response.$id) {
-	// 		router.push("/Auth/Main");
-	// 	}
+		userId && setAdminUserId(userId);
+		internalEthAddr && setInternalWalletAddr(internalEthAddr);
+	};
+
+	useEffect(() => {
+		getInitialParams();
+		const [receivingWallet] = store.wallets.filter(
+			(wallet) => String(wallet.id) === walletId
+		);
+		setWalletInfo(receivingWallet);
+	}, [walletId, store.wallets]);
+
+	const updatePayment = async () => {
+		const confirmationBeganAt = new Date().toISOString();
+		const txStatus = {
+			status: true,
+			confirmationAt: confirmationBeganAt,
+		};
+		const response = await updateTransactionStatus(transactionId, txStatus);
+		if (response.data && response.data[0].id) {
+			router.push("/Auth/Main");
+		}
+	};
+
+	const addPayment = async () => {
+		const validationBeganAt = new Date().toISOString();
+		const transaction = {
+			from: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+			status: false,
+			validatingAt: validationBeganAt,
+			amount: parseFloat(amount || "0"),
+			walletId: Number(walletId),
+			adminUserId: Number(adminUserId),
+		};
+		const response = await addTransaction(transaction);
+		if (response && response.length > 0) {
+			const { id } = response[0];
+			setTransactionId(id);
+		}
+	};
 
 	return (
 		<div className="flex lg:w-1/2 justify-center items-center space-y-8">
 			<div className="w-full px-8 md:px-32 lg:px-24">
 				<div className="bg-white rounded-md shadow-2xl p-5">
-					<form
-						action={() => {}}
-						// action={updatePayment}
-						// action={addPayment}
-					>
+					<form>
 						<h1 className="text-gray-800 text-center font-bold text-2xl mb-1">
 							Escanea para pagar
 						</h1>
 						<div className="flex items-center justify-center mb-8 py-2">
-							<QrGenerator info={amount + "/" + walletId} />
+							<QrGenerator info={amount + "/" + internalWalletAddr} />
 						</div>
 						<div className="flex items-center justify-center mb-8">
 							<h3 className="text-gray-800 text-center text-2xl mb-1">
-								Billetera <b>{walletInfo.description}</b> recibe{" "}
+								Billetera <b>{walletInfo?.description}</b> recibe{" "}
 								<b>
 									{CHARGE_COIN}
 									{amount}
 								</b>{" "}
-								a través de la red <b>{walletInfo.networks.name}</b> (
-								{walletInfo.networks.description})
+								a través de la red <b>{walletInfo?.networks?.name}</b> (
+								{walletInfo?.networks?.descriptions})
 							</h3>
 						</div>
 						<div className="flex justify-center">
@@ -83,8 +101,8 @@ export default function InvoicePage() {
 								Cancelar
 							</Link>
 						</div>
-						{/* <Button text={"Generamos manualmente"} type="submit" /> */}
-						{/* <Button text={"Actualizamos manualmente"} type="submit" /> */}
+						{/* <Button text={"Generar Transacción"} type="submit" /> */}
+						{/* <Button text={"Actualizar Transacción"} type="submit" /> */}
 					</form>
 				</div>
 			</div>

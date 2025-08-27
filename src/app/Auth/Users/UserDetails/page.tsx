@@ -7,11 +7,11 @@ import PhoneField from "@/app/components/Inputs/PhoneField";
 import Face from "@/app/components/Icons/face";
 import Email from "@/app/components/Icons/email";
 import Password from "@/app/components/Icons/password";
-import {
-	addManagedUser,
-	updateManagedUser,
-} from "@/app/services/appwrite/managedUsers";
-import { LOGGEDIN_USER_STORAGE_KEYS } from "@/app/services/appwrite/init";
+// import {
+// 	addManagedUser,
+// 	updateManagedUser,
+// } from "@/app/services/supabase/managedUsers";
+import { loggedInUserStorageKeys } from "@/app/services/supabase/init";
 
 export default function UserDetails() {
 	const searchParams = useSearchParams();
@@ -29,17 +29,17 @@ export default function UserDetails() {
 	useEffect(() => {
 		const getAdminUserId = async () => {
 			const adminUserId =
-				(await sessionStorage.getItem(LOGGEDIN_USER_STORAGE_KEYS.id)) || "";
+				(await sessionStorage.getItem(loggedInUserStorageKeys.id)) || "";
 			setUser({ ...user, users: adminUserId });
 		};
 		getAdminUserId();
 	}, []);
 
 	const saveUser = async () => {
-		const response = (await !userId)
-			? addManagedUser(user)
-			: updateManagedUser(user, userId as string);
-		console.log(response);
+		// const response = (await !userId)
+		// 	? addManagedUser(user)
+		// 	: updateManagedUser(user, userId as string);
+		// console.log(response);
 	};
 
 	const handleChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {

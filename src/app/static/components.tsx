@@ -24,12 +24,12 @@ export const adminOptions = [
 		url: "/Auth/Wallets",
 		icon: <Wallet />,
 	},
-	{
-		name: "Usuarios",
-		url: "/Auth/Users",
-		employeeVisible: false,
-		icon: <Users />,
-	},
+	// {
+	// 	name: "Usuarios",
+	// 	url: "/Auth/Users",
+	// 	employeeVisible: false,
+	// 	icon: <Users />,
+	// },
 	// {
 	// 	name: "Perfil",
 	// 	employeeVisible: true,

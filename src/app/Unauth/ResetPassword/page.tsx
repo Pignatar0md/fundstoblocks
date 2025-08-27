@@ -3,10 +3,37 @@
 import Password from "@/app/components/Icons/password";
 import SideScreen from "@/app/components/SideScreen";
 
-// import Link from "next/link";
+import { ChangeEvent, useState } from "react";
+import { supabase } from "../../../../lib/supabase";
+import { redirect } from "next/navigation";
 
 export default function ResetPasswordPage() {
-	const handleSubmit = () => {};
+	const [data, setData] = useState({ password: "", confirmPassword: "" });
+	const [showPassword, setShowPassword] = useState(false);
+
+	const handleSubmit = async () => {
+		if (data.password !== data.confirmPassword) {
+			alert("Tus claves son distintas");
+		}
+		try {
+			const response = await supabase.auth.updateUser({
+				password: data.password,
+			});
+			if (response.data.user && response.data.user.id) {
+				console.log(response.data);
+				redirect("/");
+			}
+		} catch (error) {
+			alert("Hubo un error. Intenta mas tarde.");
+			throw error;
+		}
+	};
+
+	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+		event.preventDefault();
+		setData({ ...data, [event.target.name]: event.target.value });
+	};
+
 	return (
 		<div className="h-screen flex">
 			<SideScreen />
@@ -26,9 +53,9 @@ export default function ResetPasswordPage() {
 							<Password />
 							<input
 								className="pl-2 w-full outline-none border-none"
-								type="password"
+								type={showPassword ? "text" : "password"}
 								name="password"
-								id="password"
+								onChange={onChange}
 								placeholder="Define una clave"
 							/>
 						</div>
@@ -36,12 +63,18 @@ export default function ResetPasswordPage() {
 							<Password />
 							<input
 								className="pl-2 w-full outline-none border-none"
-								type="password"
-								name="password"
-								id="password"
+								type={showPassword ? "text" : "password"}
+								name="confirmPassword"
+								onChange={onChange}
 								placeholder="Reingresa la clave"
 							/>
 						</div>
+						<button
+							onClick={() => setShowPassword(!showPassword)}
+							className="cursor-pointer hover:underline"
+						>
+							Mostrar claves
+						</button>
 						<button
 							type="submit"
 							className="block w-full bg-indigo-600 mt-5 py-2 rounded-2xl hover:bg-indigo-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2"

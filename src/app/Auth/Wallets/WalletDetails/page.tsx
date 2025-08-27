@@ -3,16 +3,21 @@ import React, { useContext, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Button from "@/app/components/Buttons/Button";
 import SelectField from "@/app/components/Inputs/SelectField";
-import { addWallet, updateWallet } from "@/app/services/appwrite/wallets";
-import { getCurrencies, getNetworks } from "@/app/services/appwrite/api";
-// import { getNetworkOptions } from "@/app/helpers/functions";
+import { addWallet, updateWallet } from "@/app/services/supabase/wallets";
 import { StoreContext } from "@/state/GlobalProvider";
 import { Wallet } from "@/types/Wallet";
 import Description from "@/app/components/Icons/description";
 import Email from "@/app/components/Icons/email";
+import { loggedInUserStorageKeys } from "@/app/services/supabase/init";
 
 export default function WalletDetailsPage() {
+	const { store } = useContext(StoreContext);
 	const router = useRouter();
+	const [errorModal, setErrorModal] = useState({
+		show: false,
+		text: "",
+		title: "",
+	});
 	const [networkOptions, setNetworkOptions] = useState<
 		{ text: string; value: string }[]
 	>([]);
@@ -20,22 +25,37 @@ export default function WalletDetailsPage() {
 		{ text: string; value: string }[]
 	>([]);
 
-	const getPaymentNetworks = async () => {
-		const result = await getNetworks();
-		const formattedResult = result.map(({ description, $id }) => ({
-			text: description,
-			value: $id,
-		}));
-		setNetworkOptions(formattedResult);
-	};
-
-	const getStableCoins = async () => {
-		const result = await getCurrencies();
-		const formattedResult = result.map(({ name, $id }) => ({
+	const getInitialParams = async () => {
+		const userId = await sessionStorage.getItem(loggedInUserStorageKeys.userId);
+		const networkFormattedResult = store.networks?.map(
+			({ descriptions, name, id }) => ({
+				text: `${descriptions} (${name})`,
+				value: id,
+			})
+		);
+		const currencyFormattedResult = store.currencies?.map(({ name, id }) => ({
 			text: name,
-			value: $id,
+			value: id,
 		}));
-		setStableCoinOptions(formattedResult);
+
+		setNetworkOptions(
+			networkFormattedResult ?? [{ text: "sin redes", value: "0" }]
+		);
+		setStableCoinOptions(
+			currencyFormattedResult ?? [{ text: "sin monedas", value: "0" }]
+		);
+
+		if (networkFormattedResult && currencyFormattedResult) {
+			setWallet({
+				...wallet,
+				adminUserId: userId as string,
+				networks: networkFormattedResult[0],
+				currencies: currencyFormattedResult[0],
+			});
+		}
+		if (walletId) {
+			getWalletById();
+		}
 	};
 
 	const searchParams = useSearchParams();
@@ -46,45 +66,50 @@ export default function WalletDetailsPage() {
 		description: "",
 		currencies: { value: "", text: "" },
 		networks: { value: "", text: "" },
-		users: "",
+		adminUserId: "",
 	});
-	// const [network, setNetwork] = useState(getNetworkOptions(token.value));
-	const { store } = useContext(StoreContext);
 
 	const getWalletById = () => {
-		const walletToUpdate = store.wallets.filter(
-			(wallet: Wallet) => wallet.$id === walletId
+		const [walletToUpdate] = store.wallets.filter(
+			(wallet: Wallet) => String(wallet.id) === walletId
 		);
-		setWallet({
-			...wallet,
-			address: walletToUpdate[0].address,
-			description: walletToUpdate[0].description,
-			currencies: {
-				text: walletToUpdate[0].currencies.name,
-				value: walletToUpdate[0].currencies.$id,
-			},
-			networks: {
-				text: walletToUpdate[0].networks.name,
-				value: walletToUpdate[0].networks.$id,
-			},
-		});
+
+		if (walletToUpdate?.id) {
+			setWallet({
+				...wallet,
+				address: walletToUpdate.address,
+				description: walletToUpdate.description,
+				currencies: {
+					text: walletToUpdate.currencies.name,
+					value: walletToUpdate.currencies.id,
+				},
+				networks: {
+					text: walletToUpdate.networks.name,
+					value: walletToUpdate.networks.id,
+				},
+			});
+		}
 	};
 
 	useEffect(() => {
-		getStableCoins();
-		getPaymentNetworks();
-		if (walletId) {
-			getWalletById();
-		}
-	}, []);
+		getInitialParams();
+	}, [store.wallets]);
 
 	const saveWallet = async () => {
-		const response = (await walletId)
-			? updateWallet(wallet)
-			: addWallet(wallet);
-
-		if (response.$id) {
+		let response;
+		if (!walletId) {
+			response = await addWallet(wallet);
+		} else {
+			response = await updateWallet(walletId, wallet);
+		}
+		if (response) {
 			router.push("/Auth/Wallets");
+		} else {
+			setErrorModal({
+				show: true,
+				text: "aaa",
+				title: "asd",
+			});
 		}
 	};
 
@@ -106,7 +131,7 @@ export default function WalletDetailsPage() {
 						<input
 							id="description"
 							className=" pl-2 w-full outline-none border-none"
-							value={wallet.description}
+							value={wallet?.description}
 							type="text"
 							onChange={(e) =>
 								setWallet({ ...wallet, description: e.target.value })
@@ -130,7 +155,7 @@ export default function WalletDetailsPage() {
 								setWallet({ ...wallet, address: e.target.value })
 							}
 							name="walletAddress"
-							value={wallet.address}
+							value={wallet?.address}
 							placeholder="0x9702...."
 						/>
 					</div>
@@ -148,7 +173,7 @@ export default function WalletDetailsPage() {
 									currencies: selectedOpt,
 								});
 							}}
-							defaultSelected={wallet.currencies.value}
+							defaultSelected={wallet?.currencies?.value}
 							options={stableCoinOptions}
 							label="Elegir moneda"
 						/>
@@ -166,7 +191,7 @@ export default function WalletDetailsPage() {
 									},
 								})
 							}
-							defaultSelected={wallet.networks.value}
+							defaultSelected={wallet?.networks?.value}
 							options={networkOptions}
 							label="Elegir red"
 						/>

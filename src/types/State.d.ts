@@ -1,5 +1,7 @@
 export type StoreInitState = {
 	wallets: Wallet[];
+	networks: Network[];
+	currencies: Currency[];
 	transactions: Transaction[];
 	users: User[];
 	managedUsers: ManagedUser[];

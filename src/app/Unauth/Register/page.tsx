@@ -8,14 +8,18 @@ import LinkButton from "@/app/components/Buttons/LinkButton";
 import PhoneField from "@/app/components/Inputs/PhoneField";
 import SideScreen from "@/app/components/SideScreen";
 
-import { createAdminUser } from "@/app/services/appwrite/users";
+import { createAdminUser, signUp } from "@/app/services/supabase/users";
 import Face from "@/app/components/Icons/face";
 import Email from "@/app/components/Icons/email";
 import Password from "@/app/components/Icons/password";
-import { WEB3_CONFIG } from "../../services/appwrite/init";
+import { web3Config } from "@/app/services/supabase/init";
 // import Store from "@/app/components/Icons/store";
 
 export default function RegisterPage() {
+	const [checkbox, setCheckbox] = useState({
+		privacyPolicies: false,
+		termsAndConditions: false,
+	});
 	const [newUser, setNewUser] = useState({
 		name: "",
 		password: "",
@@ -27,7 +31,7 @@ export default function RegisterPage() {
 
 	useEffect(() => {
 		const web3 = new Web3(
-			`https://mainnet.infura.io/v3/${WEB3_CONFIG.INFURA_API_KEY}`
+			`https://mainnet.infura.io/v3/${web3Config.INFURA_API_KEY}`
 		);
 		const ethAccount = web3.eth.accounts.create();
 		setNewUser({
@@ -39,6 +43,7 @@ export default function RegisterPage() {
 
 	const signupUser = async () => {
 		await createAdminUser(newUser);
+		await signUp({ email: newUser.email, password: newUser.password });
 		redirect("/Unauth/Success?type=register");
 	};
 
@@ -120,8 +125,14 @@ export default function RegisterPage() {
 									id="checkbox-1"
 									aria-describedby="checkbox-1"
 									type="checkbox"
+									onChange={() =>
+										setCheckbox({
+											...checkbox,
+											termsAndConditions: !checkbox.termsAndConditions,
+										})
+									}
 									className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded"
-									checked={false}
+									checked={checkbox.termsAndConditions}
 								/>
 								<label
 									htmlFor="checkbox-1"
@@ -136,8 +147,14 @@ export default function RegisterPage() {
 									id="checkbox-1"
 									aria-describedby="checkbox-1"
 									type="checkbox"
+									onChange={() =>
+										setCheckbox({
+											...checkbox,
+											privacyPolicies: !checkbox.privacyPolicies,
+										})
+									}
 									className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded"
-									checked={false}
+									checked={checkbox.privacyPolicies}
 								/>
 
 								<label

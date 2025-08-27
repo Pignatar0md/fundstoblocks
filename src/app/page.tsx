@@ -1,24 +1,35 @@
 "use client";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import SideScreen from "./components/SideScreen";
 import Modal from "./components/Modal";
-import { getCurrentUser, signIn } from "./services/appwrite/users";
+import { getAdminUserByEmail, signIn } from "./services/supabase/users";
 import Email from "./components/Icons/email";
 import Password from "./components/Icons/password";
-import { LOGGEDIN_USER_STORAGE_KEYS } from "./services/appwrite/init";
+import { loggedInUserStorageKeys } from "./services/supabase/init";
+import { getNetworks } from "./services/supabase/networks";
+import { getCurrencies } from "./services/supabase/currencies";
+import { StoreContext } from "@/state/GlobalProvider";
+import { saveSessionInfo, saveUserInfo } from "./helpers/storage/saveInfo";
+import { getWallets } from "./services/supabase/wallets";
+import { Wallet } from "@/types/Wallet";
+import { Network } from "@/types/Network";
+import { Currency } from "@/types/Currency";
 
 export default function Home() {
 	const modalInitState = { show: false, title: "", message: "" };
+	const { setCurrencies, setNetworks, setWallets } = useContext(StoreContext);
 	const [user, setUser] = useState({ email: "", password: "" });
 	const [modal, setModal] = useState(modalInitState);
 	const router = useRouter();
 
 	const checkIsSession = async () => {
 		try {
-			const openedSession = await getCurrentUser();
-			if (!!openedSession.name) {
+			const openedSession = await sessionStorage.getItem(
+				loggedInUserStorageKeys.email
+			);
+			if (!!openedSession) {
 				router.push("/Auth/Main/");
 			}
 		} catch (error) {
@@ -30,46 +41,24 @@ export default function Home() {
 		checkIsSession();
 	}, []);
 
-	const handleSubmit = async () => {
+	const handleLogin = async () => {
 		try {
 			const signInResult = await signIn(user);
-			const currentUserResult = await getCurrentUser();
-			//providerUid = email
-			//userId = accountId
-			await sessionStorage.setItem(
-				LOGGEDIN_USER_STORAGE_KEYS.providerUid,
-				signInResult.providerUid
-			);
-			await sessionStorage.setItem(
-				LOGGEDIN_USER_STORAGE_KEYS.userId,
-				signInResult.userId
-			);
+			if (signInResult && signInResult.user) {
+				const loggedInUserData = await getAdminUserByEmail(
+					signInResult.user.email!
+				);
+				const walletsResponse = await getWallets();
+				const networksResponse = await getNetworks();
+				const currenciesResponse = await getCurrencies();
+				setWallets(walletsResponse.data as unknown as Wallet[]);
+				setNetworks(networksResponse as Network[]);
+				setCurrencies(currenciesResponse as Currency[]);
 
-			await sessionStorage.setItem(
-				LOGGEDIN_USER_STORAGE_KEYS.id,
-				currentUserResult.$id
-			);
-			await sessionStorage.setItem(
-				LOGGEDIN_USER_STORAGE_KEYS.accountId,
-				currentUserResult.accountId
-			);
-			await sessionStorage.setItem(
-				LOGGEDIN_USER_STORAGE_KEYS.avatar,
-				currentUserResult.avatar
-			);
-			await sessionStorage.setItem(
-				LOGGEDIN_USER_STORAGE_KEYS.email,
-				currentUserResult.email
-			);
-			await sessionStorage.setItem(
-				LOGGEDIN_USER_STORAGE_KEYS.name,
-				currentUserResult.name
-			);
-			await sessionStorage.setItem(
-				LOGGEDIN_USER_STORAGE_KEYS.phone,
-				currentUserResult.phone
-			);
-			router.push("/Auth/Main/");
+				saveUserInfo(loggedInUserData);
+				saveSessionInfo(signInResult);
+				router.push("/Auth/Main");
+			}
 		} catch (error: unknown) {
 			if (error instanceof Error) {
 				const errorMessage = error.message.split(".");
@@ -101,7 +90,7 @@ export default function Home() {
 			<div className="flex w-full lg:w-1/2 justify-center items-center bg-white space-y-8">
 				<div className="w-full px-8 md:px-32 lg:px-24">
 					<form
-						action={handleSubmit}
+						action={handleLogin}
 						className="bg-white rounded-md shadow-2xl p-5"
 					>
 						<h1 className="text-gray-800 font-bold text-2xl mb-1">Hola!</h1>

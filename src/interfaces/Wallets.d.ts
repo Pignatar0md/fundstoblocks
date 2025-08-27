@@ -1,10 +1,7 @@
 export interface NewWallet {
 	description: string;
 	address: string;
-	currencies: string;
-	networks: string;
-}
-
-export interface EditedWallet extends NewWallet {
-	$id: string;
+	currencies: { value: string };
+	networks: { value: string };
+	adminUserId: string;
 }

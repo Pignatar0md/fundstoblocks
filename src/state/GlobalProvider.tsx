@@ -5,8 +5,12 @@ import { Transaction } from "@/types/Transaction";
 import { createContext, FC, ReactNode, useReducer } from "react";
 import { ManagedUser, User } from "@/types/User";
 import { ActionType, StoreInitState } from "@/types/State";
+import { Currency } from "@/types/Currency";
+import { Network } from "@/types/Network";
 
 const storeInitialState = {
+	networks: [],
+	currencies: [],
 	wallets: [
 		{
 			description: "",
@@ -58,6 +62,16 @@ const storeReducer = (state: StoreInitState, action: ActionType) => {
 				...state,
 				wallets: action.payload as Wallet[],
 			};
+		case "SET_CURRENCIES":
+			return {
+				...state,
+				currencies: action.payload as Currency[],
+			};
+		case "SET_NETWORKS":
+			return {
+				...state,
+				networks: action.payload as Network[],
+			};
 		case "SET_TRANSACTIONS":
 			return {
 				...state,
@@ -81,12 +95,16 @@ const storeReducer = (state: StoreInitState, action: ActionType) => {
 export const StoreContext = createContext<{
 	store: StoreInitState;
 	setWallets: (wallets: Wallet[]) => void;
+	setNetworks: (networks: Network[]) => void;
+	setCurrencies: (currencies: Currency[]) => void;
 	setTransactions: (transactions: Transaction[]) => void;
 	setUsers: (users: User[]) => void;
 	setManagedUsers: (managedUsers: ManagedUser[]) => void;
 }>({
 	store: storeInitialState,
 	setWallets: () => {},
+	setNetworks: () => {},
+	setCurrencies: () => {},
 	setTransactions: () => {},
 	setUsers: () => {},
 	setManagedUsers: () => {},
@@ -107,6 +125,10 @@ export const StoreContextProvider: FC<{ children: ReactNode }> = ({
 		dispatch({ type: "SET_MANAGED_USERS", payload: managedUsers });
 	// const setWallets = (wallets: Wallet[]) =>
 	// 	dispatch({ type: "SET_WALLETS", payload: wallets });
+	const setNetworks = (networks: Network[]) =>
+		dispatch({ type: "SET_NETWORKS", payload: networks });
+	const setCurrencies = (currencies: Currency[]) =>
+		dispatch({ type: "SET_CURRENCIES", payload: currencies });
 
 	return (
 		<StoreContext.Provider
@@ -116,6 +138,8 @@ export const StoreContextProvider: FC<{ children: ReactNode }> = ({
 				setTransactions,
 				setUsers,
 				setManagedUsers,
+				setCurrencies,
+				setNetworks,
 			}}
 		>
 			{children}

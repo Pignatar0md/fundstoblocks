@@ -1,22 +1,39 @@
 "use client";
 import Button from "@/app/components/Buttons/Button";
 import Email from "@/app/components/Icons/email";
-import PhoneField from "@/app/components/Inputs/PhoneField";
+// import PhoneField from "@/app/components/Inputs/PhoneField";
 import SideScreen from "@/app/components/SideScreen";
+import { resetPassword } from "@/app/services/supabase/users";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 
 export default function SendUpdatePasswordLinkPage() {
-	const sendOTP = () => {
+	const [email, setEmail] = useState("");
+
+	const sendEmailWithToken = async () => {
+		await resetPassword(
+			email,
+			`${window.location.origin}/Unauth/ResetPassword`
+		);
+
 		redirect("/Unauth/Success?type=updatePassword");
 	};
+
+	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+		event.preventDefault();
+		setEmail(event.target.value);
+	};
+
 	return (
 		<div className="h-screen flex">
 			<SideScreen />
 			<div className="flex w-full lg:w-1/2 justify-center items-center bg-white space-y-8">
 				<div className="w-full px-8 md:px-32 lg:px-24">
-					<form action={sendOTP} className="bg-white rounded-md shadow-2xl p-5">
+					<form
+						action={sendEmailWithToken}
+						className="bg-white rounded-md shadow-2xl p-5"
+					>
 						<h1 className="text-gray-800 font-bold text-2xl mb-1">
 							Reseteo de clave
 						</h1>
@@ -31,17 +48,18 @@ export default function SendUpdatePasswordLinkPage() {
 								className=" pl-2 w-full outline-none border-none"
 								type="email"
 								name="email"
+								onChange={onChange}
 								placeholder="dirección de e-mail"
 							/>
 						</div>
-						<div className="flex items-center border-2 mb-8 py-2 px-3 rounded-2xl">
+						{/* <div className="flex items-center border-2 mb-8 py-2 px-3 rounded-2xl">
 							<PhoneField
 								value={""}
 								onChange={function (a: ChangeEvent<HTMLInputElement>): void {
 									throw new Error("Function not implemented." + a);
 								}}
 							/>
-						</div>
+						</div> */}
 						<Button text="Enviar" type="submit" />
 						<div className="text-sm font-medium text-gray-900">
 							Has recordado tu clave?{" "}

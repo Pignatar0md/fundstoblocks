@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import { WEB3_CONFIG } from "../appwrite/init";
+import { web3Config } from "../supabase/init";
 // import polygon_abi from "./polygon_abi.json";
 
 type Network = "Polygon" | "Ethereum" | "Avalanche" | "BSC" | "Arbitrum";
@@ -11,7 +11,7 @@ const makeTransfer = async (
 	walletPK: string
 ) => {
 	const web3 = new Web3(
-		"https://mainnet.infura.io/v3/" + WEB3_CONFIG.INFURA_API_KEY
+		`https://mainnet.infura.io/v3/${web3Config.INFURA_API_KEY}`
 	);
 
 	const myAccount = web3.eth.accounts.privateKeyToAccount(walletPK);

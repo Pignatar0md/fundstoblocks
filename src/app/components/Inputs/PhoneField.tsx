@@ -30,11 +30,7 @@ export default function PhoneField({
 		<>
 			<Phone />
 			<div className="w-full max-w-sm min-w-[200px]">
-				{!!label ?? (
-					<label className="block mb-1 text-sm text-slate-800">
-						Enter Phone Number
-					</label>
-				)}
+				{<label className="block mb-1 text-sm text-slate-800">{label}</label>}
 				<div className="flex items-center">
 					<SelectField
 						bordered={false}

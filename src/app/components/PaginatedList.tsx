@@ -1,5 +1,5 @@
 import { Wallet } from "@/types/Wallet";
-import { Transaction } from "@/types/Transaction";
+import { ListedTransaction } from "@/types/Transaction";
 import { ManagedUser } from "@/types/User";
 import { ListType } from "@/types/Components";
 import {
@@ -17,7 +17,7 @@ export default function PaginatedList({
 }: {
 	heads: string[];
 	listType: ListType;
-	rows: Wallet[] | Transaction[] | ManagedUser[];
+	rows: Wallet[] | ListedTransaction[] | ManagedUser[];
 	onDelete?: (description: string, id: string) => void;
 }) {
 	return (
@@ -36,7 +36,7 @@ export default function PaginatedList({
 					{listType === "wallets"
 						? drawWalletTBody(rows as Wallet[], listType, onDelete!)
 						: listType === "transactions"
-						? drawTransactionTBody(rows as Transaction[])
+						? drawTransactionTBody(rows as ListedTransaction[])
 						: drawUserTBody(rows as ManagedUser[], listType, onDelete!)}
 				</tbody>
 			</table>

@@ -4,14 +4,21 @@ import { useRouter } from "next/navigation";
 import SidebarMenuItem from "./SidebarMenuItem";
 import Modal from "../Modal";
 import { adminOptions } from "@/app/static/components";
-import { signOut } from "@/app/services/appwrite/users";
 import Logout from "../Icons/logout";
+import { signOut } from "@/app/services/supabase/users";
+import { loggedInUserStorageKeys } from "@/app/services/supabase/init";
 
 export default function Sidebar() {
 	const [showModal, setShowModal] = React.useState(false);
 	const router = useRouter();
 
 	const endSession = async () => {
+		await sessionStorage.removeItem(loggedInUserStorageKeys.walletAddress);
+		await sessionStorage.removeItem(loggedInUserStorageKeys.providerUid);
+		await sessionStorage.removeItem(loggedInUserStorageKeys.userId);
+		await sessionStorage.removeItem(loggedInUserStorageKeys.email);
+		await sessionStorage.removeItem(loggedInUserStorageKeys.phone);
+		await sessionStorage.removeItem("accessToken");
 		await signOut();
 		setShowModal(false);
 		router.push("/");

@@ -5,7 +5,7 @@ const Add = () => (
 		viewBox="0 0 24 24"
 		strokeWidth="1.5"
 		stroke="currentColor"
-		className="size-6"
+		className="size-8 text-lime-600"
 	>
 		<path
 			strokeLinecap="round"

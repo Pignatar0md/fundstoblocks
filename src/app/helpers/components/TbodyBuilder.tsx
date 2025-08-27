@@ -1,12 +1,15 @@
 import { dayMonthFormat, hoursMinutesFormat } from "@/app/static/helpers";
 import ImageButton from "@/app/components/Buttons/ImageButton";
 import Delete from "@/app/components/Icons/delete";
+import Confirmed from "@/app/components/Icons/confirmed";
+import Validating from "@/app/components/Icons/validating";
 import Edit from "@/app/components/Icons/edit";
 import { ListType } from "@/types/Components";
-import { Transaction } from "@/types/Transaction";
+import { ListedTransaction } from "@/types/Transaction";
 import { ManagedUser } from "@/types/User";
 import { Wallet } from "@/types/Wallet";
 import { ReactNode } from "react";
+import Details from "@/app/components/Icons/details";
 
 const pageChunk = {
 	transactions: "",
@@ -21,7 +24,7 @@ export const drawWalletTBody = (
 ): ReactNode => {
 	return rows.map(
 		(
-			{ description, address, networks, currencies, $id }: Wallet,
+			{ description, address, networks, currencies, id }: Wallet,
 			index: number
 		) => {
 			return (
@@ -36,13 +39,13 @@ export const drawWalletTBody = (
 						<>
 							<ImageButton
 								type={"button"}
-								onPress={() => onDelete(description, $id)}
+								onPress={() => onDelete(description, id)}
 							>
 								<Delete />
 							</ImageButton>
 							<ImageButton
 								type="link"
-								url={`/Auth/${pageChunk[listType]}?operationType=update&id=${$id}`}
+								url={`/Auth/${pageChunk[listType]}?operationType=update&id=${id}`}
 							>
 								<Edit />
 							</ImageButton>
@@ -54,7 +57,7 @@ export const drawWalletTBody = (
 	);
 };
 
-export const drawTransactionTBody = (rows: Transaction[]): ReactNode => {
+export const drawTransactionTBody = (rows: ListedTransaction[]): ReactNode => {
 	const formatDate = (date: string, typeInfo: "date" | "time") => {
 		if (!!date) {
 			const isTime = typeInfo === "time" ? hoursMinutesFormat : dayMonthFormat;
@@ -69,35 +72,42 @@ export const drawTransactionTBody = (rows: Transaction[]): ReactNode => {
 	return rows.map(
 		(
 			{
-				$id,
+				id,
 				from,
 				amount,
 				status,
 				validatingAt,
 				wallets,
 				confirmationAt,
-			}: Transaction,
+			}: ListedTransaction,
 			index: number
 		) => {
 			return (
 				<tr key={index}>
 					<td className={"text-center py-2"}>
-						{"..." + $id.substring($id.length - 5)}
+						{from?.substring(0, 9) + "..."}
 					</td>
-					<td className={"text-center py-2"}>{from.substring(0, 9) + "..."}</td>
 					<td className={"text-center py-2"}>{amount}</td>
-					<td className={"text-center py-2"}>{status}</td>
 					<td className={"text-center py-2"}>
-						{formatDate(validatingAt, "date")}
+						{status ? <Confirmed inlineBlock /> : <Validating inlineBlock />}
 					</td>
 					<td className={"text-center py-2"}>
-						{formatDate(validatingAt, "time")}
+						{validatingAt ? formatDate(validatingAt, "date") : ""}
 					</td>
 					<td className={"text-center py-2"}>
-						{wallets ? wallets.description : "(Eliminada)"}
+						{validatingAt ? formatDate(validatingAt, "time") : ""}
+					</td>
+					<td className={"text-center py-2"}>{wallets.description}</td>
+					<td className={"text-center py-2"}>
+						{confirmationAt ? formatDate(confirmationAt, "time") : ""}
 					</td>
 					<td className={"text-center py-2"}>
-						{formatDate(confirmationAt, "time")}
+						<ImageButton
+							type="link"
+							url={`/Auth/Transactions/TransactionDetails?id=${id}`}
+						>
+							<Details inlineBlock />
+						</ImageButton>
 					</td>
 				</tr>
 			);

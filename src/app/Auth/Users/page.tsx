@@ -8,8 +8,8 @@ import { StoreContext } from "@/state/GlobalProvider";
 import Add from "@/app/components/Icons/add";
 import {
 	getManagedUsers,
-	quitManagedUser,
-} from "@/app/services/appwrite/managedUsers";
+	// quitManagedUser,
+} from "@/app/services/supabase/managedUsers";
 
 export default function UsersPage() {
 	const { store, setManagedUsers } = useContext(StoreContext);
@@ -35,13 +35,13 @@ export default function UsersPage() {
 	};
 
 	const deleteUser = async () => {
-		const response: { message?: string } = await quitManagedUser(
-			showModal.userId
-		);
-		if (response?.message === "") {
-			setShowModal(modalUsersInitState);
-		}
-		getUsersList();
+		// const response: { message?: string } = await quitManagedUser(
+		// 	showModal.userId
+		// );
+		// if (response?.message === "") {
+		// 	setShowModal(modalUsersInitState);
+		// }
+		// getUsersList();
 	};
 
 	return (

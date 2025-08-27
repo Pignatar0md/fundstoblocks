@@ -16,7 +16,7 @@ export default function ReceivePage() {
 	const getWalletOptions = () => {
 		const formattedWallets = store.wallets.map((wallet) => ({
 			text: wallet.description,
-			value: wallet.$id,
+			value: wallet.id,
 		}));
 		setWalletOptions(formattedWallets);
 		setWallet(formattedWallets[0]);

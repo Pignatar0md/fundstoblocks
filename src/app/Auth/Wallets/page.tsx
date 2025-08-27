@@ -5,7 +5,7 @@ import SearchField from "@/app/components/Inputs/SearchField";
 import ImageButton from "@/app/components/Buttons/ImageButton";
 import Modal from "@/app/components/Modal";
 
-import { getWallets, quitWallet } from "@/app/services/appwrite/wallets";
+import { getWallets, quitWallet } from "@/app/services/supabase/wallets";
 import { StoreContext } from "@/state/GlobalProvider";
 import { Wallet } from "@/types/Wallet";
 import Add from "@/app/components/Icons/add";
@@ -21,8 +21,8 @@ export default function WalletsPage() {
 	const [showModal, setShowModal] = useState(modalWalletsInitState);
 
 	const getWalletList = async () => {
-		const { documents } = await getWallets();
-		setWallets(documents as unknown as Wallet[]);
+		const response = await getWallets();
+		setWallets(response.data as unknown as Wallet[]);
 	};
 
 	useEffect(() => {
@@ -34,9 +34,15 @@ export default function WalletsPage() {
 	};
 
 	const deleteWallet = async () => {
-		const response: { message?: string } = await quitWallet(showModal.walletId);
-		if (response?.message === "") {
+		const response = await quitWallet(showModal.walletId);
+		if (!response?.error?.message) {
 			setShowModal(modalWalletsInitState);
+		} else {
+			setShowModal({
+				showing: true,
+				walletDescription: response.error.message,
+				walletId: "",
+			});
 		}
 		getWalletList();
 	};
@@ -53,12 +59,49 @@ export default function WalletsPage() {
 				onAccept={deleteWallet}
 			/>
 			<div className="w-full px-8 md:px-32 lg:px-24">
-				<div className="bg-white rounded-md shadow-2xl p-5">
-					<h1 className="text-gray-800 text-center font-bold text-2xl mb-1">
-						Lista de Billeteras
-					</h1>
-					<div className="flex flex-row items-center justify-between">
+				{store.wallets.length > 0 ? (
+					<div className="bg-white rounded-md shadow-2xl p-5">
+						<h1 className="text-gray-800 text-center font-bold text-2xl mb-1">
+							Lista de Billeteras
+						</h1>
+						<div className="flex flex-row items-center justify-between">
+							<div className="max-w-2xl">
+								<ImageButton
+									type="link"
+									url="/Auth/Wallets/WalletDetails?operationType=add"
+								>
+									<Add />
+								</ImageButton>
+							</div>
+							<div className="w-6/12">
+								<SearchField
+									runSearch={runSearch}
+									value={searchValue}
+									setValue={(e) => setSearchValue(e.target.value)}
+								/>
+							</div>
+						</div>
+
+						<PaginatedList
+							rows={store.wallets}
+							listType={"wallets"}
+							onDelete={(description: string, id: string) =>
+								setShowModal({
+									showing: true,
+									walletDescription: description,
+									walletId: id,
+								})
+							}
+							heads={["Descripción", "Address", "Red", "Moneda", "Acciones"]}
+						/>
+					</div>
+				) : (
+					<>
 						<div className="max-w-2xl">
+							<span>
+								Sin wallets todavía. Anímate a crear una pulsando el siguiente
+								botón
+							</span>
 							<ImageButton
 								type="link"
 								url="/Auth/Wallets/WalletDetails?operationType=add"
@@ -66,28 +109,8 @@ export default function WalletsPage() {
 								<Add />
 							</ImageButton>
 						</div>
-						<div className="w-6/12">
-							<SearchField
-								runSearch={runSearch}
-								value={searchValue}
-								setValue={(e) => setSearchValue(e.target.value)}
-							/>
-						</div>
-					</div>
-
-					<PaginatedList
-						rows={store.wallets}
-						listType={"wallets"}
-						onDelete={(description: string, id: string) =>
-							setShowModal({
-								showing: true,
-								walletDescription: description,
-								walletId: id,
-							})
-						}
-						heads={["Descripción", "Address", "Red", "Moneda", "Acciones"]}
-					/>
-				</div>
+					</>
+				)}
 			</div>
 		</div>
 	);
